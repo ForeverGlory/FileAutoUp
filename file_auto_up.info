@@ -1,0 +1,8 @@
+name = FileAutoUp
+description = Upload a file upload automatically
+package = Fields
+dependencies[] = file
+dependencies[] = libraries
+
+core = 7.x
+version = 7.x-1.0-dev
