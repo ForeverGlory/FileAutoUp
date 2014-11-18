@@ -1,1 +1,19 @@
 <?php
+
+/**
+ * Implements hook_element_info_alter().
+ */
+function file_auto_up_element_info_alter(&$types) {
+  if (isset($types['managed_file'])) {
+    $types['managed_file']['#process'][] = 'file_auto_up_managed_file_process';
+  }
+}
+
+function file_auto_up_managed_file_process($element, &$form_state, $form) {
+  if (!empty($element['#auto_up'])) {
+    $element['#attributes']['class'][] = 'file-auto-up';
+    $element['#attached']['js'][] = drupal_get_path('module', 'file_auto_up') . '/file_auto_up.js';
+    $element['#attached']['css'][] = drupal_get_path('module', 'file_auto_up') . '/file_auto_up.css';
+  }
+  return $element;
+}
