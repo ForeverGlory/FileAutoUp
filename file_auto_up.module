@@ -17,3 +17,35 @@ function file_auto_up_managed_file_process($element, &$form_state, $form) {
   }
   return $element;
 }
+
+function file_auto_up_form_alter($form, &$form_state, $form_id) {
+  //echo $form_id;
+}
+
+/**
+ * 增加上传文件的选项
+ * @param type $form
+ * @param type $form_state
+ */
+function file_auto_up_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
+  if (isset($form['#field']) && in_array($form['#field']['type'], array('file', 'image'))) {
+    $additions = &$form['instance']['settings'];
+    $settings = $form['#instance']['settings'];
+    $additions['file_auto_up'] = array(
+      '#title' => t('auto upload'),
+      '#type' => 'checkbox',
+      '#description' => t('Select files automatically after upload'),
+      '#default_value' => $settings['file_auto_up']
+    );
+  }
+}
+
+function file_auto_up_field_widget_form_alter(&$element, &$form_state, $context) {
+  $field = $context['field'];
+  if (isset($field['type']) && in_array($field['type'], array('file', 'image'))) {
+    $settings = $context['field']['settings'];
+    if (!empty($settings['file_auto_up'])) {
+      $element[0]['#auto_up'] = TRUE;
+    }
+  }
+}
