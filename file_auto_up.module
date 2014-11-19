@@ -36,7 +36,7 @@ function file_auto_up_form_field_ui_field_edit_form_alter(&$form, &$form_state) 
       '#title' => t('auto upload'),
       '#type' => 'checkbox',
       '#description' => t('Select files automatically after upload'),
-      '#default_value' => $settings['file_auto_up']
+      '#default_value' => isset($settings['file_auto_up']) ? $settings['file_auto_up'] : ''
     );
   }
 }
