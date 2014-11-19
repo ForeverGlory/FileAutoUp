@@ -10,22 +10,23 @@ function file_auto_up_element_info_alter(&$types) {
 }
 
 function file_auto_up_managed_file_process($element, &$form_state, $form) {
-  if (!empty($element['#auto_up'])) {
-    $element['#attributes']['class'][] = 'file-auto-up';
+  if (!empty($element['#file_auto_up'])) {
+    $element['#attributes']['data'][] = 'file-auto-up';
+    $element['#attached']['js'][] = array(
+      'type' => 'setting',
+      'data' => array('file_auto_up' => array($element['#id']))
+    );
+    if (empty($element['#file'])) {
+      drupal_add_css('#' . $element['#id'] . '-upload-button{display:none;}', array('type' => 'inline'));
+    }
     $element['#attached']['js'][] = drupal_get_path('module', 'file_auto_up') . '/file_auto_up.js';
-    $element['#attached']['css'][] = drupal_get_path('module', 'file_auto_up') . '/file_auto_up.css';
   }
   return $element;
 }
 
-function file_auto_up_form_alter($form, &$form_state, $form_id) {
-  //echo $form_id;
-}
-
 /**
  * 增加上传文件的选项
- * @param type $form
- * @param type $form_state
+ * Implements hook_form_FORM_ID_alter().
  */
 function file_auto_up_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
   if (isset($form['#field']) && in_array($form['#field']['type'], array('file', 'image'))) {
@@ -40,12 +41,17 @@ function file_auto_up_form_field_ui_field_edit_form_alter(&$form, &$form_state) 
   }
 }
 
+/**
+ * Implements hook_field_widget_form_alter().
+ */
 function file_auto_up_field_widget_form_alter(&$element, &$form_state, $context) {
   $field = $context['field'];
   if (isset($field['type']) && in_array($field['type'], array('file', 'image'))) {
     $settings = $context['field']['settings'];
     if (!empty($settings['file_auto_up'])) {
-      $element[0]['#auto_up'] = TRUE;
+      foreach ($element as $key => $value) {
+        $element[$key]['#file_auto_up'] = TRUE;
+      }
     }
   }
 }
