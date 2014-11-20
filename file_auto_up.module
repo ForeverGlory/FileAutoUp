@@ -11,7 +11,6 @@ function file_auto_up_element_info_alter(&$types) {
 
 function file_auto_up_managed_file_process($element, &$form_state, $form) {
   if (!empty($element['#file_auto_up'])) {
-    $element['#attributes']['data'][] = 'file-auto-up';
     $element['#attached']['js'][] = array(
       'type' => 'setting',
       'data' => array('file_auto_up' => array($element['#id']))
